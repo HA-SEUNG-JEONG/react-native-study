@@ -4,10 +4,14 @@ import { icons } from "@/constants/icons";
 
 const SearchBar = ({
     onPress,
-    placeholder
+    placeholder,
+    value,
+    onChangeText
 }: {
     onPress?: () => void;
     placeholder: string;
+    value: string;
+    onChangeText: (text: string) => void;
 }) => {
     return (
         <View className="flex-row items-center bg-drak-200 rounded-full px-5 py-4">
@@ -20,8 +24,8 @@ const SearchBar = ({
             <TextInput
                 onPress={onPress}
                 placeholder={placeholder}
-                value=""
-                onChangeText={() => {}}
+                value={value}
+                onChangeText={onChangeText}
                 placeholderTextColor="#ab8bff"
                 className="flex-1 ml-2 text-white"
             />
