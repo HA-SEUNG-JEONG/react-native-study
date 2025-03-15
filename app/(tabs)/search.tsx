@@ -28,17 +28,17 @@ const Search = () => {
         setSearchQuery(text);
     };
 
-    // Debounced search effect
     useEffect(() => {
-        const func = async () => {
+        const timeoutId = setTimeout(async () => {
             if (searchQuery.trim()) {
                 const res = await loadMovies();
                 console.log(res, "res");
             } else {
                 reset();
             }
-        };
-        func();
+        }, 500);
+
+        return () => clearTimeout(timeoutId);
     }, [searchQuery]);
 
     return (
