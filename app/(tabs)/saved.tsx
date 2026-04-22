@@ -1,12 +1,5 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { Redirect } from "expo-router";
 
-const Saved = () => {
-    return (
-        <View>
-            <Text>saved</Text>
-        </View>
-    );
-};
-
-export default Saved;
+export default function Saved() {
+    return <Redirect href="/(tabs)/profile" />;
+}
