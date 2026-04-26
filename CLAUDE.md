@@ -43,13 +43,15 @@ services/
 NativeWind v4 (Tailwind CSS for React Native). Use `className` prop on all RN components.
 
 **Custom tokens** (defined in `tailwind.config.js`):
+
 - `bg-primary` / `text-primary` → `#030014` (dark background)
 - `bg-accent` / `text-accent` → `#AB8BFF` (purple)
 - `light.100`–`light.900`, `dark.100`–`dark.900` (purple scale)
 
 **Known issue**: `tailwind.config.js` has `content: []` empty — styles work in dev but will be purged in production builds. Add paths before building for release:
+
 ```js
-content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"]
+content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"];
 ```
 
 **NativeWind RN limitations**: no `grid-*`, no `hover:`/`focus:`, `gap-*` only works in flex containers.
@@ -61,6 +63,7 @@ Use `style` prop (not className) for `aspectRatio` on `FlatList` items with `num
 **Safe area**: Use `useSafeAreaInsets()` for `paddingTop`. `SafeAreaProvider` is at root `_layout.tsx` — required or hook always returns 0.
 
 **Navigation**:
+
 - `router.push("/post/1")` — add to stack (back button returns)
 - `router.replace("/auth/signup")` — swap screens (no back)
 - Dynamic params: `useLocalSearchParams<{ id: string }>()`
@@ -78,3 +81,5 @@ Use `style` prop (not className) for `aspectRatio` on `FlatList` items with `num
 - **Phase 1 (complete)**: Navigation, NativeWind styling, Safe Area, FlatList feed, auth forms
 - **Phase 2 (next)**: `@tanstack/react-query` (useInfiniteQuery + optimistic mutations), `zustand` auth store, JWT + `expo-secure-store`
 - **Phase 3 (planned)**: `expo-image-picker`, `expo-notifications`, `expo-haptics`
+
+| rubberduck | 학습을 위한 장치 | `.claude/rules/rubberduck-ai.md` |

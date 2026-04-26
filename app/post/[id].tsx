@@ -1,20 +1,39 @@
 import React from "react";
-import { View, Text, Image, Pressable, ScrollView } from "react-native";
+import {
+    View,
+    Text,
+    Image,
+    Pressable,
+    ScrollView,
+    ActivityIndicator,
+    Alert,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { MOCK_POSTS, MOCK_COMMENTS } from "@/constants/mockData";
+import { usePost, useToggleLike } from "@/hooks/useFeed";
+import { MOCK_COMMENTS } from "@/constants/mockData";
 
 export default function PostDetailScreen() {
     // useLocalSearchParams: 파일명 [id].tsx → { id } 자동 추출
-    // 웹의 useParams()와 동일한 역할
     const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
     const insets = useSafeAreaInsets();
+    const { data: post, isLoading, isError } = usePost(id);
+    const likeMutation = useToggleLike();
 
-    const post = MOCK_POSTS.find((p) => p.id === id);
+    if (isLoading) {
+        return (
+            <View
+                className="flex-1 bg-primary items-center justify-center"
+                style={{ paddingTop: insets.top }}
+            >
+                <ActivityIndicator color="#AB8BFF" />
+            </View>
+        );
+    }
 
-    if (!post) {
+    if (isError || !post) {
         return (
             <View
                 className="flex-1 bg-primary items-center justify-center"
@@ -28,17 +47,34 @@ export default function PostDetailScreen() {
         );
     }
 
+    const handleLike = () => {
+        likeMutation.mutate(
+            { postId: post.id, currentlyLiked: post.likedByMe },
+            {
+                onError: (err) => {
+                    Alert.alert(
+                        "좋아요 실패",
+                        err instanceof Error ? err.message : "오류"
+                    );
+                },
+            }
+        );
+    };
+
     return (
         <View className="flex-1 bg-primary" style={{ paddingTop: insets.top }}>
-            {/* 뒤로가기 헤더 — router.back()이 웹의 history.back()과 동일 */}
             <View className="flex-row items-center px-4 py-3 border-b border-gray-800">
                 <Pressable onPress={() => router.back()}>
                     <Ionicons name="arrow-back" size={24} color="#fff" />
                 </Pressable>
-                <Text className="text-white font-bold text-base ml-4">게시물</Text>
+                <Text className="text-white font-bold text-base ml-4">
+                    게시물
+                </Text>
             </View>
 
-            <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}>
+            <ScrollView
+                contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
+            >
                 <View className="flex-row items-center px-4 py-3">
                     <Image
                         source={{ uri: post.user.avatar }}
@@ -55,9 +91,25 @@ export default function PostDetailScreen() {
                     resizeMode="cover"
                 />
 
+                <View className="flex-row items-center px-4 py-2 gap-4">
+                    <Pressable
+                        onPress={handleLike}
+                        className="flex-row items-center gap-1"
+                    >
+                        <Ionicons
+                            name={post.likedByMe ? "heart" : "heart-outline"}
+                            size={26}
+                            color={post.likedByMe ? "#ef4444" : "#fff"}
+                        />
+                        <Text className="text-white text-sm">{post.likes}</Text>
+                    </Pressable>
+                </View>
+
                 <View className="px-4 py-3">
                     <Text className="text-white leading-5">
-                        <Text className="font-semibold">{post.user.username} </Text>
+                        <Text className="font-semibold">
+                            {post.user.username}{" "}
+                        </Text>
                         {post.caption}
                     </Text>
                     <Text className="text-gray-500 text-xs mt-2">
